@@ -30,11 +30,33 @@ class COSMO_Run_yu:
             header = get_yutiming_header_data(yutimings)
             body = get_yutiming_body_data(yutimings)
             self.benchmark_metadata = body
-            dyn = ["Dyn. Computations", "Cpp dycore step", "Cpp dycore copy in", "Cpp dycore copy out"]
             val = 0
+            dyn = ["Dyn. Computations", "Cpp dycore step", "Cpp dycore copy in", "Cpp dycore copy out"]
             for result in dyn:
                 val = body[result]["max"] + val
             self.timings.append(("dynamics max", val))
+
+            val = body["Phy. Computations"]["max"]
+            phy = ["Precipitation", "Radiation", "Turbulence","Convection","Soil Model","Sub-grid Scale Oro."]
+            for result in phy:
+                val = body["Phy. Computations"][result]["max"] + val
+            self.timings.append(("physics max", val))
+
+            val = 0
+            io = ["Input", "Output"]
+            for result in io:
+                val = body[result]["max"] + val
+                if result is "Input": 
+                  val = body[result]["read data"]["max"] + val
+                  val = body[result]["meta data"]["max"] + val
+                  val = body[result]["computations I"]["max"] + val
+                  val = body[result]["distribute data"]["max"] + val
+                if result is "Output": 
+                  val = body[result]["computations O"]["max"] + val
+                  val = body[result]["meta data"]["max"] + val
+                  val = body[result]["write data"]["max"] + val
+                  val = body[result]["gather data"]["max"] + val
+            self.timings.append(("io max", val))
 
     def __str__(self):
         res = self.name
