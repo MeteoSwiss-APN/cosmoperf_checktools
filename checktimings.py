@@ -22,13 +22,14 @@ __license__    = "GPL"
 __version__    = "1.0"
 
 def parse():
-    from cosmo_timings import COSMO_Run
+    from cosmo_timings_yu import COSMO_Run_yu
     env = read_environ()
     rundir = env['RUNDIR']
+    yutimings = "YUTIMING"
     cosmolog = env['LOGFILE']
     slurmlog = env['LOGFILE_SLURM']
     name = "Cosmo run in "+rundir
-    return COSMO_Run(folder=rundir, name=name, cosmolog=cosmolog, slurmlog=slurmlog)
+    return COSMO_Run_yu(folder=rundir, name=name, yutimings="YUTIMING", cosmolog=cosmolog, slurmlog=slurmlog)
 
 def get_reference_timings():
     import ConfigParser
